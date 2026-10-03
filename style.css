@@ -1,0 +1,797 @@
+/* ==========================================================
+   CÓDIGO FUENTE DE MAMÁ — estilos
+   Los colores se definen aquí como valores por defecto, pero
+   se pueden cambiar desde script.js (sección PERSONALIZACIÓN).
+   ========================================================== */
+
+:root {
+  /* Editor (oscuro) */
+  --fondo: #0c0e12;
+  --fondo-rgb: 12, 14, 18;
+  --panel: #12151b;
+  --panel-rgb: 18, 21, 27;
+  --texto: #d9dee5;
+  --tenue: #7d8895;
+  --linea: #232832;
+  --numeros: #525b67;
+
+  /* Sintaxis */
+  --clave: #5fcfdc;
+  --cadena: #b2dca3;
+  --nombre: #f2f5f8;
+  --variable: #9db4cc;
+  --comentario: #7a9187;
+  --funcion: #8fe3c0;
+
+  --acento: #6fe3d3;
+  --acento-rgb: 111, 227, 211;
+  --corazon: #ff7f95;
+  --corazon-rgb: 255, 127, 149;
+
+  /* Amanecer (cálido) */
+  --amanecer-arriba: #fde9da;
+  --amanecer-abajo: #f4bfc2;
+  --sol: #ffd9a8;
+  --sol-rgb: 255, 217, 168;
+  --tinta: #3b2230;
+  --tinta-rgb: 59, 34, 48;
+  --corazon-calido: #d6486a;
+  --corazon-calido-rgb: 214, 72, 106;
+  --particula-calida: #e8a48a;
+  --particula-calida-rgb: 232, 164, 138;
+
+  --t-amanecer: 3500ms;
+  --t-editor: 2400ms;
+
+  --mono: ui-monospace, "SF Mono", "Cascadia Mono", "JetBrains Mono", Menlo, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia,
+    "Times New Roman", serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  background: var(--fondo);
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.6;
+  -webkit-tap-highlight-color: transparent;
+}
+
+:focus-visible {
+  outline: 2px solid var(--acento);
+  outline-offset: 2px;
+}
+
+body.amanecer :focus-visible {
+  outline-color: var(--corazon-calido);
+}
+
+.solo-lectores {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Capas de fondo ---------- */
+
+.fondo-amanecer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: radial-gradient(90% 55% at 50% 108%, rgba(var(--sol-rgb), 0.75), transparent 72%),
+    linear-gradient(180deg, var(--amanecer-arriba) 0%, var(--amanecer-abajo) 100%);
+  opacity: 0;
+  transition: opacity var(--t-amanecer) ease;
+  pointer-events: none;
+}
+
+body.amanecer .fondo-amanecer {
+  opacity: 1;
+}
+
+.capas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.particula {
+  position: absolute;
+  bottom: -10px;
+  left: var(--x, 50%);
+  width: var(--tam, 3px);
+  height: var(--tam, 3px);
+  border-radius: 50%;
+  background: rgba(var(--acento-rgb), 0.55);
+  opacity: 0;
+  animation: flotar var(--d, 26s) linear var(--delay, 0s) infinite;
+  transition: background-color 3s ease;
+}
+
+body.amanecer .particula {
+  background: rgba(var(--particula-calida-rgb), 0.6);
+}
+
+@keyframes flotar {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  15% {
+    opacity: 0.35;
+  }
+  85% {
+    opacity: 0.35;
+  }
+  100% {
+    transform: translate(var(--dx, 20px), -108vh);
+    opacity: 0;
+  }
+}
+
+.corazones {
+  display: none;
+}
+
+body.amanecer .corazones {
+  display: block;
+}
+
+.corazon {
+  position: absolute;
+  bottom: -2rem;
+  left: var(--x, 50%);
+  font-size: var(--s, 1rem);
+  color: var(--corazon-calido);
+  opacity: 0;
+  animation: subir var(--d, 22s) linear var(--delay, 0s) infinite;
+}
+
+@keyframes subir {
+  0% {
+    transform: translate(0, 0);
+    opacity: 0;
+  }
+  18% {
+    opacity: 0.26;
+  }
+  82% {
+    opacity: 0.2;
+  }
+  100% {
+    transform: translate(var(--dx, 20px), -112vh);
+    opacity: 0;
+  }
+}
+
+/* ---------- Estructura de la aplicación ---------- */
+
+.app {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 62rem;
+  margin: 0 auto;
+  padding-left: env(safe-area-inset-left, 0px);
+  padding-right: env(safe-area-inset-right, 0px);
+}
+
+@media (min-width: 1000px) {
+  .app {
+    border-left: 1px solid var(--linea);
+    border-right: 1px solid var(--linea);
+  }
+}
+
+/* ---------- Barra superior ---------- */
+
+.barra {
+  flex: none;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-height: calc(48px + env(safe-area-inset-top, 0px));
+  padding: env(safe-area-inset-top, 0px) 0.5rem 0 0;
+  background: var(--panel);
+  border-bottom: 1px solid var(--linea);
+  transition: background var(--t-editor) ease, border-color var(--t-editor) ease;
+}
+
+body.amanecer .barra {
+  background: transparent;
+  border-bottom-color: transparent;
+}
+
+.pestana {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  min-width: 0;
+  padding: 0 0.9rem;
+  background: var(--fondo);
+  border-top: 2px solid var(--acento);
+  border-right: 1px solid var(--linea);
+  font-size: 0.78rem;
+  color: var(--nombre);
+  transition: opacity var(--t-editor) ease;
+}
+
+body.amanecer .pestana {
+  opacity: 0;
+}
+
+.pestana-punto {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--tenue);
+}
+
+.pestana-nombre {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.btn-mini {
+  align-self: center;
+  flex: none;
+  min-height: 44px;
+  padding: 0 0.8rem;
+  font: inherit;
+  font-size: 0.8rem;
+  color: var(--texto);
+  background: transparent;
+  border: 1px solid var(--linea);
+  border-radius: 8px;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: color 0.25s ease, border-color 0.25s ease, background 0.25s ease;
+}
+
+.btn-mini:hover {
+  border-color: rgba(var(--acento-rgb), 0.6);
+}
+
+.btn-mini:active {
+  background: rgba(var(--acento-rgb), 0.12);
+}
+
+.btn-mini[aria-pressed="true"] {
+  color: var(--acento);
+  border-color: rgba(var(--acento-rgb), 0.7);
+  background: rgba(var(--acento-rgb), 0.12);
+}
+
+.btn-mini:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+body.amanecer .btn-mini {
+  color: var(--tinta);
+  border-color: rgba(var(--tinta-rgb), 0.3);
+}
+
+body.amanecer .btn-mini:hover {
+  border-color: rgba(var(--corazon-calido-rgb), 0.7);
+}
+
+body.amanecer .btn-mini:active {
+  background: rgba(var(--corazon-calido-rgb), 0.12);
+}
+
+body.amanecer .btn-mini[aria-pressed="true"] {
+  color: var(--corazon-calido);
+  border-color: var(--corazon-calido);
+  background: rgba(var(--corazon-calido-rgb), 0.12);
+}
+
+/* ---------- Editor ---------- */
+
+.editor {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  transition: opacity var(--t-editor) ease;
+}
+
+.editor.disolviendo {
+  opacity: 0;
+}
+
+.lienzo {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0.75rem 0.75rem 1rem 0.25rem;
+}
+
+.codigo {
+  counter-reset: linea;
+  font-size: 0.86rem;
+  line-height: 1.65;
+  font-variant-ligatures: none;
+}
+
+.l {
+  display: flex;
+  align-items: flex-start;
+  min-height: 1.65em;
+  border-radius: 3px;
+  transition: background 0.3s ease;
+}
+
+.l::before {
+  counter-increment: linea;
+  content: counter(linea);
+  flex: none;
+  width: 2.4ch;
+  margin: 0 1.2ch 0 0.6ch;
+  text-align: right;
+  color: var(--numeros);
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.l.activa {
+  background: rgba(255, 255, 255, 0.045);
+}
+
+.l.activa::before {
+  color: var(--tenue);
+}
+
+.c {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 1.65em;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  tab-size: 4;
+}
+
+.caret {
+  display: inline-block;
+  width: 2px;
+  height: 1.15em;
+  margin-left: 1px;
+  vertical-align: -0.2em;
+  background: var(--acento);
+  box-shadow: 0 0 0.5rem rgba(var(--acento-rgb), 0.6);
+  animation: parpadeo 1.05s steps(1) infinite;
+}
+
+@keyframes parpadeo {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Resaltado de sintaxis */
+.t-kw {
+  color: var(--clave);
+}
+.t-str {
+  color: var(--cadena);
+}
+.t-nom {
+  color: var(--nombre);
+  font-weight: 700;
+}
+.t-fn {
+  color: var(--funcion);
+}
+.t-var {
+  color: var(--variable);
+}
+.t-com {
+  color: var(--comentario);
+  font-style: italic;
+}
+
+/* ---------- Panel de salida ---------- */
+
+.panel {
+  flex: none;
+  max-height: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+  border-top: 1px solid transparent;
+  transition: max-height 0.8s cubic-bezier(0.2, 0.7, 0.2, 1), border-color 0.8s ease;
+}
+
+.panel.abierto {
+  max-height: min(17rem, 46vh);
+  border-top-color: var(--linea);
+}
+
+.panel-cab {
+  position: relative;
+  flex: none;
+  display: flex;
+  align-items: center;
+  padding: 0.45rem 1rem;
+  border-bottom: 1px solid var(--linea);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: var(--tenue);
+}
+
+.barrido {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.barrido::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 35%;
+  background: linear-gradient(90deg, transparent, var(--acento), transparent);
+  transform: translateX(-100%);
+}
+
+.barrido.activo {
+  opacity: 1;
+}
+
+.barrido.activo::after {
+  animation: barrido 1.15s ease-in-out infinite;
+}
+
+@keyframes barrido {
+  to {
+    transform: translateX(290%);
+  }
+}
+
+.panel-cuerpo {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0.75rem 1rem 1rem;
+  font-size: 0.86rem;
+  line-height: 1.6;
+}
+
+.sl {
+  min-height: 1.6em;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.sl.vacia {
+  height: 1.6em;
+}
+
+.sl.tenue {
+  color: var(--tenue);
+}
+
+.pt {
+  animation: punto 1.2s ease-in-out infinite;
+}
+
+.pt:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.pt:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes punto {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+  40% {
+    opacity: 1;
+  }
+}
+
+.resultado-salida {
+  font-size: clamp(1.1rem, 5.6vw, 1.45rem);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--acento);
+  text-shadow: 0 0 0.9rem rgba(var(--acento-rgb), 0.4);
+}
+
+/* ---------- Barra de estado ---------- */
+
+.estado-barra {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0 0.5rem 0 1rem;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: var(--panel);
+  border-top: 1px solid var(--linea);
+  font-size: 0.75rem;
+  color: var(--tenue);
+}
+
+.estado-der {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  white-space: nowrap;
+}
+
+.btn-saltar {
+  min-height: 36px;
+  padding: 0 0.65rem;
+  font-size: 0.75rem;
+  color: var(--tenue);
+}
+
+.solo-ancho {
+  display: none;
+}
+
+@media (min-width: 480px) {
+  .solo-ancho {
+    display: inline;
+  }
+}
+
+/* ---------- Escena cálida ---------- */
+
+.escena {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  font-family: var(--serif);
+  color: var(--tinta);
+}
+
+.escena:not([hidden]) {
+  animation: entrar 1.4s ease backwards;
+}
+
+@keyframes entrar {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.escena-interior {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem max(1.5rem, env(safe-area-inset-right, 0px))
+    calc(2.5rem + env(safe-area-inset-bottom, 0px)) max(1.5rem, env(safe-area-inset-left, 0px));
+}
+
+.centro {
+  width: 100%;
+  max-width: 30rem;
+  margin: auto;
+}
+
+.bloque {
+  transition: opacity 1.2s ease;
+}
+
+.bloque.saliendo {
+  opacity: 0;
+}
+
+.bloque p {
+  margin: 0 0 1.2em;
+  font-size: clamp(1.1rem, 4.7vw, 1.3rem);
+  line-height: 1.7;
+  opacity: 0;
+  transition: opacity 1.7s ease;
+}
+
+.bloque p.visible {
+  opacity: 1;
+}
+
+.bloque p.enfasis {
+  margin-top: 0.2em;
+  font-size: clamp(1.75rem, 8.8vw, 2.5rem);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.bloque p.simbolo {
+  margin: 0.6rem 0 1.4rem;
+  font-size: 2.3rem;
+  line-height: 1;
+  text-align: center;
+  filter: drop-shadow(0 0 0.8rem rgba(var(--corazon-calido-rgb), 0.45));
+}
+
+.bloque p.simbolo.visible {
+  animation: latido 3.6s ease-in-out infinite;
+}
+
+@keyframes latido {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.08);
+  }
+}
+
+.bloque p.cod-linea {
+  margin-bottom: 0.4rem;
+  text-align: center;
+}
+
+.bloque p.cod-linea code {
+  display: inline-block;
+  max-width: 100%;
+  padding: 0.7rem 1.15rem;
+  font-family: var(--mono);
+  font-size: clamp(1rem, 4.6vw, 1.2rem);
+  color: var(--acento);
+  background: var(--fondo);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+  box-shadow: 0 0.7rem 2rem rgba(var(--tinta-rgb), 0.28);
+  overflow-wrap: anywhere;
+}
+
+.acciones {
+  display: flex;
+  justify-content: center;
+}
+
+.btn-continuar {
+  min-height: 52px;
+  margin-top: 1.6rem;
+  padding: 0 1.8rem;
+  font: inherit;
+  font-size: 1.05rem;
+  color: var(--tinta);
+  background: transparent;
+  border: 1.5px solid rgba(var(--tinta-rgb), 0.55);
+  border-radius: 999px;
+  cursor: pointer;
+  touch-action: manipulation;
+  opacity: 0;
+  transition: opacity 1.2s ease, background 0.25s ease;
+}
+
+.btn-continuar.visible {
+  opacity: 1;
+}
+
+.btn-continuar:hover,
+.btn-continuar:active {
+  background: rgba(var(--tinta-rgb), 0.08);
+}
+
+.btn-reiniciar {
+  margin-top: 2rem;
+  opacity: 0;
+  transition: opacity 1.5s ease, color 0.25s ease, border-color 0.25s ease;
+}
+
+.btn-reiniciar.visible {
+  opacity: 0.9;
+}
+
+.sin-js {
+  padding: 2rem 1.25rem;
+  text-align: center;
+  color: var(--texto);
+}
+
+/* ---------- Pantallas pequeñas ---------- */
+
+@media (max-width: 360px) {
+  .codigo,
+  .panel-cuerpo {
+    font-size: 0.8rem;
+  }
+  .pestana {
+    padding: 0 0.6rem;
+    font-size: 0.72rem;
+  }
+  .btn-mini {
+    padding: 0 0.6rem;
+    font-size: 0.75rem;
+  }
+}
+
+@media (min-width: 640px) {
+  body {
+    font-size: 15px;
+  }
+  .codigo,
+  .panel-cuerpo {
+    font-size: 0.95rem;
+  }
+  .lienzo {
+    padding-left: 1rem;
+  }
+}
+
+/* ---------- Movimiento reducido ---------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .capas {
+    display: none !important;
+  }
+
+  .barrido.activo::after {
+    width: 100%;
+    transform: none;
+  }
+}

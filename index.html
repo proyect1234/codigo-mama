@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0c0e12">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="Un pequeño programa convertido en una carta.">
+  <!-- Evita que buscadores indexen la página: es un regalo, no un sitio público -->
+  <meta name="robots" content="noindex, nofollow">
+  <title>CÓDIGO FUENTE DE MAMÁ</title>
+  <!-- Favicon incrustado (no requiere ninguna imagen) -->
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9D%A4%EF%B8%8F%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Capas decorativas (detrás de todo el contenido) -->
+  <div class="fondo-amanecer" aria-hidden="true"></div>
+  <div class="capas" aria-hidden="true">
+    <div class="particulas" id="particulas"></div>
+    <div class="corazones" id="corazones"></div>
+  </div>
+
+  <div class="app">
+
+    <h1 class="solo-lectores" id="titulo-pagina">Código fuente de mamá</h1>
+
+    <!-- Barra superior: pestaña del archivo y botón de música -->
+    <header class="barra">
+      <div class="pestana" id="pestana">
+        <span class="pestana-punto" aria-hidden="true"></span>
+        <span class="pestana-nombre" id="archivo-nombre">source_code/mama.py</span>
+      </div>
+      <button type="button" class="btn-mini" id="btn-musica" aria-pressed="false">🎵 Música</button>
+    </header>
+
+    <!-- Editor: código, salida y barra de estado -->
+    <div class="editor" id="editor">
+      <div class="lienzo" id="lienzo">
+        <div class="codigo" id="codigo" role="region" aria-label="Código fuente"></div>
+      </div>
+
+      <section class="panel" id="panel" aria-label="Salida del programa">
+        <div class="panel-cab">
+          <span class="panel-tab" id="panel-tab">terminal</span>
+          <span class="barrido" id="barrido"></span>
+        </div>
+        <div class="panel-cuerpo" id="panel-cuerpo"></div>
+      </section>
+
+      <footer class="estado-barra">
+        <span class="estado-izq" id="estado-izq">Python</span>
+        <span class="estado-der">
+          <span id="estado-pos">Ln 1, Col 1</span>
+          <span class="solo-ancho" id="estado-cod">UTF-8</span>
+          <button type="button" class="btn-mini btn-saltar" id="btn-saltar" hidden>saltar</button>
+        </span>
+      </footer>
+    </div>
+
+    <!-- Escena cálida: transición y mensaje final -->
+    <main class="escena" id="escena" hidden>
+      <div class="escena-interior">
+        <div class="centro">
+          <div class="bloque" id="bloque"></div>
+          <div class="acciones">
+            <button type="button" class="btn-continuar" id="btn-continuar" hidden>Continuar</button>
+            <button type="button" class="btn-mini btn-reiniciar" id="btn-reiniciar" hidden>↺ Volver a ver</button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+  </div>
+
+  <noscript>
+    <p class="sin-js">Esta página necesita JavaScript para mostrarse.</p>
+  </noscript>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
